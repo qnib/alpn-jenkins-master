@@ -1,0 +1,29 @@
+version: '2'
+services:
+  jenkins-consul:
+    image: qnib/alpn-consul
+    hostname: jenkins-consul
+    container_name: jenkins-consul
+    privileged: true
+    networks:
+     - jenkins
+    ports:
+     - "8500:8500"
+    environment:
+     - CONSUL_BOOTSTRAP=true
+     - CONSUL_SERVER=true
+
+  jenkins-master:
+    image: qnib/alpn-jenkins-master
+    hostname: jenkins-master
+    container_name: jenkins-master
+    ports:
+     - "8080:8080"
+    networks:
+     - jenkins
+    environment:
+     - CONSUL_CLUSTER_IPS=jenkins-consul
+
+networks:
+  jenkins:
+    driver: bridge
